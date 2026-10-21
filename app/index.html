@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111111">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mi Mes">
+<title>Mi Mes</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap">
+<style>
+/* App de pantalla completa. Tokens de referencia del sistema de diseño de Tenpo: fondo #111111, tarjeta #2A2A2A, verde #6BFF99, botón #02FF96. Tipografía aproximada. */
+:root{--bg:#111111;--card:#2A2A2A;--card2:#3A3A3A;--gray:#5A5A5A;--txt:#FFFFFF;--mut:#A6A6A6;--green:#6BFF99;--pill:#69FFC0;--btn:#02FF96;--amber:#FFC857;--coral:#FF9C9C;--font:'Open Sans',-apple-system,'Helvetica Neue',Arial,sans-serif;color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#000}
+body{font-family:var(--font);font-size:15px;line-height:1.4;color:var(--txt);display:flex;justify-content:center;overscroll-behavior:none}
+.app{position:relative;width:100%;max-width:480px;height:100vh;height:100dvh;background:var(--bg);overflow:hidden;box-shadow:0 0 0 1px #1d1d1d}
+.app *{font-family:var(--font)}
+.tap{all:unset;box-sizing:border-box;cursor:pointer;display:block;width:100%;text-align:left}
+button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.scr{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top,0px) + 18px) 22px 28px}
+.scr.nv{padding-bottom:calc(100px + env(safe-area-inset-bottom,0px))}
+.nav{display:flex;align-items:center;justify-content:center;position:relative;min-height:44px;margin-bottom:8px;flex:none}
+.nav .bk{all:unset;cursor:pointer;position:absolute;left:-8px;top:0;width:44px;height:44px;display:grid;place-items:center}
+.nav b{font-size:17px;font-weight:700}
+.nav .rt{position:absolute;right:0;top:6px}
+.card{background:var(--card);border-radius:16px;padding:16px;margin-top:12px;flex:none}
+.chip{display:inline-flex;align-items:center;border-radius:99px;padding:5px 11px;font-size:12px;font-weight:800;white-space:nowrap;color:#111}
+.ok{background:var(--pill)}.wn{background:var(--amber)}.bad{background:var(--coral)}.nu{background:var(--gray);color:#fff}
+.mut{color:var(--mut)}.sm{font-size:13px}
+.h1p{font-size:24px;font-weight:700;line-height:1.2;text-wrap:balance}
+.big{font-weight:300;letter-spacing:-.02em}
+.btn{display:block;width:100%;text-align:center;border-radius:12px;padding:15px;font-size:15px;font-weight:800;cursor:pointer;border:0;background:var(--btn);color:#111;flex:none}
+.btn.s{background:var(--card2);color:#fff}
+.btn.t{background:none;color:var(--green);padding:12px;font-weight:700}
+.btn.sm2{display:inline-block;width:auto;padding:9px 16px;font-size:14px;border-radius:8px}
+.gp{display:inline-block;background:var(--gray);color:#fff;border-radius:8px;padding:6px 12px;font-size:13px}
+.trk{height:10px;border-radius:9px;background:#404040;position:relative}
+.fil{position:absolute;left:0;top:0;bottom:0;border-radius:9px;background:var(--green)}
+.tk{position:absolute;top:-5px;bottom:-5px;width:3px;background:#fff;border-radius:2px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;font-size:15px;border-bottom:1px solid #3A3A3A}
+.tab{position:absolute;left:0;right:0;bottom:0;height:calc(80px + env(safe-area-inset-bottom,0px));background:var(--card);display:flex;align-items:center;padding:6px 6px calc(8px + env(safe-area-inset-bottom,0px));z-index:3}
+.tab button{all:unset;cursor:pointer;text-align:center;font-size:12px;color:#E6E6E6;flex:1;position:relative;padding-top:8px}
+.tab svg{display:block;margin:0 auto 4px}
+.tab .on{color:var(--green)}
+.tab .on::before{content:"";position:absolute;top:-6px;left:22%;right:22%;height:3px;border-radius:0 0 3px 3px;background:var(--green)}
+.tab .fab{flex:0 0 66px;height:56px;margin-top:-34px;border-radius:14px;background:var(--green);color:#111;display:grid;place-items:center;box-shadow:0 6px 16px rgba(0,0,0,.4);padding:0}
+.tab .fab::before{display:none}
+.circ{all:unset;cursor:pointer;width:46px;height:46px;border-radius:50%;background:var(--card2);display:grid;place-items:center;font-size:24px;font-weight:600}
+.opt{all:unset;box-sizing:border-box;cursor:pointer;flex:1;text-align:center;padding:9px 4px;border-radius:12px;background:var(--card2);font-size:12px;font-weight:600;line-height:1.3}
+.opt b{display:block;font-size:14px;font-weight:800}
+.opt[aria-pressed=true]{background:var(--green);color:#111}
+.sw{width:52px;height:31px;border-radius:99px;background:var(--green);position:relative;flex:none;border:0;cursor:pointer}
+.sw::after{content:"";position:absolute;right:3px;top:3px;width:25px;height:25px;border-radius:50%;background:#111}
+.sw[aria-checked=false]{background:#555}.sw[aria-checked=false]::after{right:auto;left:3px;background:#ddd}
+.banner{position:absolute;left:12px;right:12px;width:auto;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:6;background:#3A3A3A;border-radius:20px;padding:14px 16px;box-shadow:0 12px 30px rgba(0,0,0,.5);animation:in .35s ease-out}
+@keyframes in{from{transform:translateY(-24px);opacity:0}to{transform:none;opacity:1}}
+.toast{position:absolute;left:18px;right:18px;bottom:calc(100px + env(safe-area-inset-bottom,0px));background:var(--green);color:#111;border-radius:12px;padding:14px 16px;font-size:14px;font-weight:700;z-index:7;animation:in .25s ease-out}
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:8;display:grid;place-items:center;padding:28px}
+.scrim.bt{place-items:end stretch;padding:0}
+.dlg{background:#2C2C2E;border-radius:20px;width:100%;text-align:center;overflow:hidden}
+.dlg p{margin:0}
+.dlg .tt{padding:22px 20px 6px;font-weight:700;font-size:17px;line-height:1.25}
+.dlg .bd{padding:0 20px 18px;font-size:14px;color:#C7C7CC}
+.dlg .ac{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #444}
+.dlg .ac button{all:unset;cursor:pointer;padding:14px;font-size:17px;font-weight:400;color:#0A84FF}
+.dlg .ac button+button{border-left:1px solid #444;font-weight:700}
+.sheet{background:var(--card);border-radius:22px 22px 0 0;padding:10px 20px calc(24px + env(safe-area-inset-bottom,0px));animation:up .25s ease-out}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.sheet .gr{width:44px;height:5px;border-radius:3px;background:#666;margin:0 auto 14px}
+.sheet h3{margin:0 0 2px;font-size:18px}
+.dm{all:unset;cursor:pointer;display:flex;justify-content:space-between;align-items:center;width:100%;padding:13px 0;border-bottom:1px solid #3A3A3A;font-size:15px}
+.dm small{color:var(--mut);font-size:13px}
+.sp{flex:1;min-height:12px}
+.cols3{display:flex;gap:8px;margin-top:8px}
+.cols3 div{flex:1;font-size:12px;color:var(--mut)}.cols3 b{display:block;font-size:15px;color:#fff;font-weight:700}
+.cat{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #3A3A3A}
+.cat:last-child{border:0}
+.dots{display:flex;gap:6px;margin-top:10px}.dots i{flex:1;height:8px;border-radius:5px;background:#404040}.dots i.f{background:var(--green)}
+.hello{display:flex;align-items:center;justify-content:space-between;margin:4px 0 14px;flex:none}
+.hello .nm{font-size:18px;font-weight:400}.hello .nm b{font-weight:700}
+.ib{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;position:relative}
+.ib.bell{background:#E8FFEF;color:#111}
+.ib.bell::after{content:"";position:absolute;top:-4px;right:-4px;width:11px;height:11px;border-radius:50%;background:var(--green)}
+.av{all:unset;cursor:pointer;width:40px;height:40px;border-radius:50%;background:var(--green);color:#111;display:grid;place-items:center;font-weight:700;font-size:19px}
+.hdrs{display:flex;gap:10px;align-items:center}
+.demo{font-size:12px;color:var(--mut);text-align:center;margin-top:16px;flex:none}
+@media(prefers-reduced-motion:reduce){.banner,.toast,.sheet{animation:none}}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<script>
+(function(){
+  var fmt=function(n){return '$'+Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.')};
+  var D0={screen:'home',st:'ritmo',monto:600000,hasMonto:false,tope:false,aviso:true,banner:false,toast:'',perm:false,demo:false,catk:'ritmo'};
+  var S=Object.assign({},D0);
+  var timer=null,btimer=null, SPENT=258000, DAY=14, PROJ=571000, AVG=18400;
+  var CAT={
+    ritmo:{day:14,rows:[['Delivery',64000,32000],['Ocio',38000,30000],['Supermercado',96000,92000],['Transporte',41000,44000],['Otros',19000,20000]]},
+    riesgo:{day:22,rows:[['Delivery',128000,70000],['Ocio',76000,60000],['Supermercado',190000,175000],['Transporte',82000,88000],['Otros',44000,40000]]},
+    superado:{day:27,rows:[['Delivery',156000,85000],['Ocio',92000,70000],['Supermercado',230000,210000],['Transporte',100000,105000],['Otros',56000,50000]]}};
+  var SV=function(p,w){return '<svg width="'+(w||24)+'" height="'+(w||24)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>'};
+  var ICON={
+    home:SV('<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',26),
+    cuenta:SV('<path d="M8 6h12M8 12h12M8 18h12"/><path d="M4 6h.01M4 12h.01M4 18h.01"/>',26),
+    tarjetas:SV('<rect x="4" y="4" width="13" height="17" rx="2.5"/><path d="M17 8l4 1v10l-4 1"/><path d="M8 9h5"/>',26),
+    ayuda:SV('<path d="M4 14v-2a8 8 0 0116 0v2"/><rect x="3" y="13" width="4" height="6" rx="2"/><rect x="17" y="13" width="4" height="6" rx="2"/>',26),
+    plus:SV('<path d="M12 5v14M5 12h14"/>',30),
+    bell:SV('<path d="M6 17V11a6 6 0 0112 0v6l1.5 2h-15z"/><path d="M10 21h4"/>',22),
+    back:SV('<path d="M15 5l-7 7 7 7"/>',26)};
+
+  /* Veredicto único: tolerancia de 3% para no alertar por diferencias mínimas. */
+  function verdict(m){var tol=0.03*m,diff=m-PROJ;return diff>=tol?'bien':(diff>-tol?'justo':'alto')}
+  function perDay(m){return Math.round((m-SPENT)/(31-DAY)/100)*100}
+  function chart(monto,day,spent){
+    var proj=spent/day*31, ymax=Math.max(monto,proj)*1.05, y=function(v){return 92-v/ymax*78}, xd=day/31*340;
+    var prof=[[0,0],[.21,.23],[.43,.47],[.64,.74],[.86,.87],[1,1]];
+    var pts=prof.map(function(p){return (p[0]*xd).toFixed(1)+','+y(p[1]*spent).toFixed(1)}).join(' ');
+    return '<svg viewBox="0 0 340 100" style="display:block;width:100%;margin-top:8px" role="img" aria-label="Gráfico de ritmo del mes: gasto real, ritmo ideal y proyección">'+
+    '<line x1="0" y1="92" x2="340" y2="92" stroke="#444" stroke-width="2"/>'+
+    '<line x1="0" y1="92" x2="340" y2="'+y(monto).toFixed(1)+'" stroke="#8C8C8C" stroke-width="2" stroke-dasharray="6 5"/>'+
+    '<line x1="'+xd.toFixed(1)+'" y1="92" x2="'+xd.toFixed(1)+'" y2="10" stroke="#444" stroke-width="1.5"/>'+
+    '<line x1="'+xd.toFixed(1)+'" y1="'+y(spent).toFixed(1)+'" x2="340" y2="'+y(proj).toFixed(1)+'" stroke="#B8FFD2" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round"/>'+
+    '<polyline points="'+pts+'" fill="none" stroke="#6BFF99" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>'+
+    '<circle cx="'+xd.toFixed(1)+'" cy="'+y(spent).toFixed(1)+'" r="7" fill="#6BFF99" stroke="#2A2A2A" stroke-width="3"/></svg>';
+  }
+  function topCats(k,n){var r=CAT[k].rows.slice().sort(function(a,b){return (b[1]-b[2])-(a[1]-a[2])});return r.slice(0,n)}
+  function view(){
+    var m=S.monto, pd=perDay(m), vd=verdict(m);
+    if(S.st==='ritmo'){
+      var base={sub:'Llevas $258.000 de '+fmt(m)+' · día 14 de 31',chart:chart(m,DAY,SPENT)};
+      if(vd==='bien') return Object.assign(base,{chip:'Vas bien',cls:'ok',head:'Te quedan '+fmt(pd)+' por día',msg:'A este ritmo llegarías a <b>'+fmt(PROJ)+'</b>: '+fmt(m-PROJ)+' bajo tu monto.'});
+      if(vd==='justo') return Object.assign(base,{chip:'Vas justo',cls:'ok',head:'Te quedan '+fmt(pd)+' por día',msg:'A este ritmo llegarías a <b>'+fmt(PROJ)+'</b>, casi en tu monto.'});
+      return Object.assign(base,{chip:'Ritmo alto',cls:'wn',head:'A este ritmo pasarías tu monto en '+fmt(PROJ-m),msg:'Para cerrar en tu monto, tendrías que gastar <b>'+fmt(pd)+'</b> por día desde hoy. Hoy gastas '+fmt(AVG)+'.'});
+    }
+    if(S.st==='riesgo') return {chip:'Ritmo alto',cls:'wn',head:'Te quedan $80.000 para 9 días',sub:'$8.900 por día · día 22 de 31',msg:'A este ritmo pasarías tu monto en <b>$133.000</b>. Aún puedes ajustarlo.',chart:chart(600000,22,520000),b1:'Ver qué ajustar',b2:'Cambiar monto',top:'riesgo'};
+    if(S.st==='superado') return {chip:'Sobre tu monto',cls:'bad',head:'Superaste tu monto en $34.000',sub:'$634.000 de $600.000 · día 27 de 31',msg:'Lo que gastes desde ahora se suma a este exceso. Quedan 4 días.',b1:'Ajustar monto',b2:'Ver en qué se fue',top:'superado'};
+    return {chip:'Mes nuevo',cls:'nu',head:'Estamos conociendo tus gastos',sub:'Día 2 de 31',msg:'Con unos días más podremos mostrarte tu ritmo. Tu primera lectura llega el día 5.',b1:'Definir mi monto'};
+  }
+  function nav(title,go,right){return '<div class="nav"><button class="bk" data-go="'+go+'" aria-label="Volver">'+ICON.back+'</button><b>'+title+'</b>'+(right?'<span class="rt">'+right+'</span>':'')+'</div>'}
+  function tabs(a){function t(id,lab){return '<button class="'+(a===id?'on':'')+'" '+(id==='home'?'data-go="home"':'')+'>'+ICON[id]+lab+'</button>'}return '<div class="tab">'+t('home','Inicio')+t('cuenta','Gastos')+'<button class="fab" aria-label="Acciones">'+ICON.plus+'</button>'+t('tarjetas','Pagos')+t('ayuda','Ayuda')+'</div>'}
+  function catRow(r,link){
+    var d=r[1]-r[2], ch=d>0?'<span class="chip '+(d>=r[2]*0.5?'wn':'nu')+'">+'+fmt(d)+'</span>':'<span class="chip ok">−'+fmt(-d)+'</span>';
+    var inner='<div><div style="font-weight:700;font-size:16px">'+r[0]+'</div><div class="sm mut">Habitual '+fmt(r[2])+'</div></div><div style="text-align:right"><div style="font-weight:700;font-size:16px;margin-bottom:3px">'+fmt(r[1])+'</div>'+ch+'</div>';
+    return link?'<button class="tap cat" data-go="detalle" aria-label="Ver detalle de '+r[0]+'">'+inner+'</button>':'<div class="cat">'+inner+'</div>';
+  }
+
+  function home(){
+    var h='<div class="scr nv"><div class="hello"><div class="nm">Hola, <b>Camila</b></div><div class="hdrs"><span class="ib bell" aria-label="Notificaciones">'+ICON.bell+'</span><button class="av" data-act="demo" aria-label="Menú de demostración">C</button></div></div>'+
+    '<div class="card" style="margin-top:0"><div class="sm mut">Saldo disponible</div><div class="big" style="font-size:36px;line-height:1.15">$482.300</div></div>';
+    if(!S.hasMonto){
+      h+='<div class="card"><div class="sm mut" style="font-weight:700;letter-spacing:.5px">MI MES · OCTUBRE</div><div style="font-size:22px;font-weight:600;line-height:1.25;margin-top:10px">Define cuánto quieres gastar este mes</div><div class="sm mut" style="margin-top:8px;line-height:1.45">Te mostramos si vas bien o mal antes de que termine el mes, sin esperar al final.</div><div style="margin-top:16px"><button class="btn sm2" data-act="definir">Definir mi monto</button></div></div>';
+    }else{
+      var pd=perDay(S.monto), vd=verdict(S.monto), lab={bien:'Vas bien',justo:'Vas justo',alto:'Ritmo alto'}[vd];
+      if(S.st==='riesgo'){pd=8900;lab='Ritmo alto';vd='alto'} else if(S.st==='superado'){lab='Sobre tu monto'} else if(S.st==='sindatos'){lab='Mes nuevo'}
+      var num=S.st==='superado'?'−$34.000':(S.st==='sindatos'?'—':fmt(pd)), sfx=S.st==='superado'?'sobre tu monto':(S.st==='sindatos'?'Estamos conociendo tus gastos':'por día'), sub=S.st==='superado'?'quedan 4 días del mes':(S.st==='sindatos'?'Tu primera lectura llega el día 5':'para cerrar octubre dentro de tu monto');
+      var spent=S.st==='riesgo'?520000:(S.st==='superado'?634000:(S.st==='sindatos'?41000:SPENT)), mon=(S.st==='ritmo')?S.monto:600000, pct=Math.min(100,spent/mon*100).toFixed(0), tick=S.st==='riesgo'?71:(S.st==='superado'?87:(S.st==='sindatos'?6:45));
+      h+='<button class="tap card" data-go="ritmo" aria-label="Abrir Mi Mes"><div style="display:flex;justify-content:space-between;align-items:center"><span class="sm mut" style="font-weight:700;letter-spacing:.5px">TU MES · OCTUBRE</span><span class="chip '+(S.st==='superado'?'bad':(S.st==='sindatos'?'nu':(vd==='alto'?'wn':'ok')))+'">'+lab+'</span></div>'+
+      '<div style="margin-top:12px"><span class="big" style="font-size:'+(S.st==='sindatos'?'28':'44')+'px">'+num+'</span> <span class="mut" style="font-size:16px">'+sfx+'</span></div>'+
+      '<div class="sm mut" style="margin-top:2px">'+sub+'</div>'+
+      '<div style="margin-top:20px" class="trk"><div class="fil" style="width:'+pct+'%"></div><div class="tk" style="left:'+tick+'%"></div></div>'+
+      '<div style="display:flex;justify-content:space-between;margin-top:10px;font-size:13px"><span>Gastado '+fmt(spent)+'</span><span class="mut">Monto '+fmt(mon)+'</span></div>'+
+      '<div class="sm mut" style="margin-top:4px">La marca blanca es dónde deberías ir hoy.</div><div style="margin-top:12px"><span class="btn sm2">Ver mi mes</span></div></button>';
+    }
+    h+='<div class="demo">Demo: toca tu foto (C) para cambiar el día del mes o recibir un aviso.</div>'+tabs('home')+'</div>';
+    return h;
+  }
+  function monto(){
+    var m=S.monto, vd=verdict(m), pd=perDay(m);
+    var o=function(v,l){return '<button class="opt" data-act="set" data-v="'+v+'" aria-pressed="'+(S.monto===v)+'">'+l+'<b>'+fmt(v)+'</b></button>'};
+    var help=vd==='bien'?'A tu ritmo llegarías a <b>'+fmt(PROJ)+'</b>, bajo este monto.':vd==='justo'?'A tu ritmo llegarías a <b>'+fmt(PROJ)+'</b>, casi en este monto.':'A tu ritmo llegarías a <b>'+fmt(PROJ)+'</b>. Para cerrar en este monto tendrías que gastar <b>'+fmt(pd)+'</b> por día desde hoy (hoy: '+fmt(AVG)+').';
+    return '<div class="scr">'+nav('Tu monto de octubre',S.hasMonto?'ritmo':'home')+
+    '<div class="card" style="margin-top:4px"><div style="font-weight:700;font-size:15px">Tus últimos 3 meses</div>'+
+    '<div class="cols3"><div>Julio<b>$612.000</b></div><div>Agosto<b>$585.000</b></div><div>Septiembre<b>$597.000</b></div></div>'+
+    '<div class="sm mut" style="margin-top:8px">Promedio <b style="color:#fff">$598.000</b>, sin contar arriendo ni cuentas fijas.</div></div>'+
+    '<div class="card" style="text-align:center"><div class="sm" style="text-align:left;margin-bottom:10px"><b>Hoy es día 14</b> y llevas <b>$258.000</b> este mes.</div><div style="display:flex;gap:8px">'+o(600000,'Tu promedio')+o(570000,'5% menos')+o(540000,'10% menos')+'</div>'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><button class="circ" data-act="menos" aria-label="Bajar el monto $10.000">−</button><div class="big" style="font-size:38px;font-weight:600" aria-live="polite">'+fmt(m)+'</div><button class="circ" data-act="mas" aria-label="Subir el monto $10.000">+</button></div>'+
+    '<div class="sm" style="margin-top:8px;line-height:1.4;text-align:left;min-height:55px" aria-live="polite">'+help+'</div></div>'+
+    '<div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><div style="font-size:16px;font-weight:700">Avisarme cómo voy</div><div class="sm mut" style="margin-top:3px;line-height:1.35">Máximo 2 avisos por semana, solo si hay algo nuevo.</div></div><button class="sw" role="switch" aria-checked="'+S.aviso+'" aria-label="Avisarme cómo voy" data-act="aviso"></button></div>'+
+    '<div class="sp"></div><button class="btn" style="margin-top:16px" data-act="usar">Usar '+fmt(m)+'</button></div>';
+  }
+  function ritmo(){
+    var v=view(), nodata=S.st==='sindatos';
+    var h='<div class="scr">'+nav('Mi Mes','home','<button class="gp tap" data-act="demo" style="width:auto">Octubre ▾</button>')+
+    '<div class="card" style="margin-top:4px"><span class="chip '+v.cls+'">'+v.chip+'</span><div style="font-size:26px;font-weight:600;line-height:1.15;margin-top:12px;letter-spacing:-.01em;text-wrap:balance">'+v.head+'</div><div class="sm mut" style="margin-top:8px">'+v.sub+'</div></div>';
+    if(v.chart){h+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:16px">Tu ritmo</b><span class="sm mut">Real · Ideal · Proyección</span></div>'+v.chart+'<div class="sm mut" style="display:flex;justify-content:space-between;margin-top:2px"><span>1</span><span>Hoy</span><span>31</span></div><div style="font-size:15px;margin-top:10px;line-height:1.4">'+v.msg+'</div><div class="sm mut" style="margin-top:6px">No incluye arriendo ni cuentas fijas.</div></div>'}
+    else{h+='<div class="card" style="font-size:16px;line-height:1.45">'+v.msg+'</div>'}
+    if(S.st==='riesgo'||S.st==='superado'){
+      var tc=topCats(S.st,S.st==='riesgo'?2:3);
+      h+='<div class="card" style="padding:14px 16px"><b style="font-size:15px">'+(S.st==='riesgo'?'Lo que más pesa':'En qué se fue')+'</b>'+tc.map(function(r){return '<div class="sm" style="display:flex;justify-content:space-between;margin-top:6px"><span>'+r[0]+'</span><b>+'+fmt(r[1]-r[2])+' sobre lo habitual</b></div>'}).join('')+'</div>';
+    }
+    if(S.st==='sindatos'){
+      h+='<div class="card"><b style="font-size:15px">Primera lectura el día 5</b><div class="dots"><i class="f"></i><i class="f"></i><i></i><i></i><i></i></div><div class="sm mut" style="margin-top:8px">Llevas $41.000 en 6 movimientos. Con 5 días de datos calculamos tu ritmo.</div></div>';
+    }
+    if(S.st==='ritmo'){h+='<div class="card"><b style="font-size:16px">Delivery va al doble de lo habitual</b><div class="sm mut" style="margin:4px 0 12px">$64.000 este mes · $32.000 a esta fecha en promedio</div><button class="btn" data-go="detalle">'+(S.tope?'Tope de $80.000 activo':'Ponerle un tope')+'</button></div><div class="sp"></div><button class="tap" data-go="categorias" style="color:#6BFF99;font-weight:700;text-align:center;font-size:15px;padding:16px 0 4px">Ver todas las categorías →</button><button class="tap" data-act="otro" style="color:#A6A6A6;text-align:center;font-size:14px;padding:8px 0">Cambiar monto</button>'}
+    else{h+='<div class="sp"></div><button class="btn" style="margin-top:14px" data-act="'+(nodata?'definir':(v.top?'cat:'+v.top:'ajustar'))+'">'+v.b1+'</button>'+(v.b2?'<button class="btn t" data-act="'+(S.st==='superado'?'cat:superado':'otro')+'">'+v.b2+'</button>':'')}
+    return h+'</div>';
+  }
+  function categorias(){
+    var k=S.catk||'ritmo', d=CAT[k];
+    return '<div class="scr">'+nav('Dónde ajustar','ritmo')+
+    '<div class="mut" style="font-size:14px;margin:0 0 4px;line-height:1.4">Ordenadas por cuánto se alejan de lo habitual a esta fecha (día '+d.day+').</div>'+
+    '<div class="card" style="padding:4px 16px">'+d.rows.slice().sort(function(a,b){return (b[1]-b[2])-(a[1]-a[2])}).map(function(r){return catRow(r,r[0]==='Delivery')}).join('')+'</div>'+
+    '<div class="sm mut" style="margin-top:10px">Toca Delivery para ver su detalle y ponerle un tope.</div><div class="sp"></div><button class="btn s" style="margin-top:16px" data-act="otro">Cambiar monto</button></div>';
+  }
+  function detalle(){
+    return '<div class="scr">'+nav('Delivery','ritmo')+
+    '<div style="margin:0 0 2px"><span class="chip wn">Al doble de lo habitual</span></div>'+
+    '<div class="card"><div class="big" style="font-size:38px;font-weight:600">$64.000 <span class="mut" style="font-size:15px;font-weight:400;letter-spacing:0">este mes</span></div>'+
+    '<div style="margin-top:12px;display:flex;justify-content:space-between;font-size:14px"><span>Este mes</span><b>$64.000</b></div><div class="trk" style="margin-top:6px;height:12px"><div class="fil" style="width:100%"></div></div>'+
+    '<div style="margin-top:12px;display:flex;justify-content:space-between;font-size:14px"><span>Habitual a esta fecha</span><b>$32.000</b></div><div class="trk" style="margin-top:6px;height:12px"><div class="fil" style="width:50%;background:#8C8C8C"></div></div></div>'+
+    '<div style="font-size:17px;font-weight:700;margin:14px 0 0">9 pedidos este mes</div><div class="row"><span>Uber Eats · 12 oct</span><b>−$14.990</b></div><div class="row"><span>PedidosYa · 9 oct</span><b>−$18.490</b></div><div class="row" style="border:0"><span>Uber Eats · 6 oct</span><b>−$12.990</b></div>'+
+    '<div class="sp"></div><div style="margin-top:14px"><button class="btn" data-act="tope">'+(S.tope?'Tope de $80.000 activo':'Ponerle un tope de $80.000')+'</button><button class="btn s" data-act="viernes" style="margin-top:8px;padding:14px">Recordármelo el viernes</button><button class="btn t" data-act="silenciar">No avisarme de esto</button></div></div>';
+  }
+  function banner(){
+    return '<button class="banner tap" data-go="detalle" aria-label="Abrir aviso de Delivery"><div style="display:flex;justify-content:space-between;font-size:13px"><b>Numa</b><span class="mut">ahora</span></div><div style="font-size:16px;font-weight:700;margin-top:4px">Delivery va al doble de lo habitual</div><div style="font-size:14px;margin-top:2px;line-height:1.35" class="mut">Llevas $64.000 este mes. Ver cómo ajustarlo.</div></button>';
+  }
+  function permiso(){
+    return '<div class="scrim"><div class="dlg" role="dialog" aria-label="Permiso de notificaciones"><p class="tt">“Numa” quiere enviarte notificaciones</p><p class="bd">Te avisaremos cuando haya algo nuevo en tu mes. Puedes cambiarlo en Ajustes.</p><div class="ac"><button data-act="noperm">No permitir</button><button data-act="perm">Permitir</button></div></div></div>';
+  }
+  function demo(){
+    var it=function(k,t,s){return '<button class="dm" data-demo="'+k+'"><span>'+t+'</span><small>'+s+'</small></button>'};
+    return '<div class="scrim bt" data-act="cerrar"><div class="sheet" role="dialog" aria-label="Menú de demostración"><div class="gr"></div><h3>Demo: momento del mes</h3><div class="sm mut" style="margin-bottom:6px">Solo para revisar los estados. Los datos son de ejemplo.</div>'+
+    it('ritmo','Día 14 · en ritmo','Vas bien')+it('riesgo','Día 22 · ritmo alto','Te quedan $80.000')+it('superado','Día 27 · sobre el monto','Superaste en $34.000')+it('sindatos','Día 2 · sin datos','Mes nuevo')+it('aviso','Recibir un aviso','Delivery va al doble')+
+    '<button class="dm" data-demo="reset" style="border:0;color:#6BFF99;font-weight:700">Reiniciar la demo</button></div></div>';
+  }
+  function render(){
+    var h={home:home,monto:monto,ritmo:ritmo,detalle:detalle,categorias:categorias}[S.screen]();
+    if(S.banner && (S.screen==='home')) h+=banner();
+    if(S.toast) h+='<div class="toast" role="status">'+S.toast+'</div>';
+    if(S.perm) h+=permiso();
+    if(S.demo) h+=demo();
+    var el=document.getElementById('app'), prev=el.querySelector('.scr'), top=prev?prev.scrollTop:0;
+    el.innerHTML=h;
+    var n=el.querySelector('.scr'); if(n&&S._keep) n.scrollTop=top;
+  }
+  function toast(t){S.toast=t;S._keep=true;render();clearTimeout(timer);timer=setTimeout(function(){S.toast='';S._keep=true;render()},2600)}
+  function go(){S.perm=false;S.screen='ritmo';S.st='ritmo'}
+  document.addEventListener('click',function(e){
+    var el=e.target.closest('[data-go],[data-act],[data-demo]'); if(!el) return;
+    S._keep=false;
+    if(el.dataset.demo){
+      var k=el.dataset.demo; S.demo=false; S.banner=false; clearTimeout(btimer);
+      if(k==='reset'){S=Object.assign({},D0)}
+      else if(k==='aviso'){S.hasMonto=true;S.st='ritmo';S.screen='home';S.banner=true;btimer=setTimeout(function(){S.banner=false;S._keep=true;render()},9000)}
+      else{S.hasMonto=true;S.st=k;S.screen='ritmo'}
+      render();return;
+    }
+    if(el.dataset.go){if(el.dataset.go==='categorias')S.catk=(S.st in CAT)?S.st:'ritmo';if(el.dataset.go==='ritmo'&&!S.hasMonto){S.screen='monto'}else S.screen=el.dataset.go;S.banner=false;render();return}
+    var a=el.dataset.act;
+    if(a==='demo'){S.demo=true;render();return}
+    if(a==='cerrar'){if(e.target.closest('.sheet'))return;S.demo=false;render();return}
+    if(a&&a.indexOf('cat:')===0){S.catk=a.slice(4);S.screen='categorias';render();return}
+    if(a==='menos'){S.monto=Math.max(300000,S.monto-10000);S._keep=true;render()}
+    else if(a==='mas'){S.monto=Math.min(1200000,S.monto+10000);S._keep=true;render()}
+    else if(a==='set'){S.monto=parseInt(el.dataset.v,10);S._keep=true;render()}
+    else if(a==='aviso'){S.aviso=!S.aviso;S._keep=true;render()}
+    else if(a==='usar'){S.hasMonto=true;if(S.aviso){S.perm=true;S._keep=true;render()}else{go();toast('Monto definido en '+fmt(S.monto)+'.')}}
+    else if(a==='perm'){go();toast('Monto definido en '+fmt(S.monto)+'. Te avisaré como máximo 2 veces por semana.')}
+    else if(a==='noperm'){S.aviso=false;go();toast('Monto definido. Sin avisos: puedes activarlos en Ajustes.')}
+    else if(a==='otro'||a==='definir'||a==='ajustar'){S.screen='monto';S.st='ritmo';render()}
+    else if(a==='tope'){S.tope=!S.tope;toast(S.tope?'Tope de $80.000 guardado para Delivery.':'Tope quitado.')}
+    else if(a==='viernes'){toast('Listo. Te lo recordaré el viernes.')}
+    else if(a==='silenciar'){toast('No te avisaremos más sobre Delivery.')}
+  });
+  window.__setState=function(o){Object.assign(S,o);render();return document.getElementById('app').innerHTML};
+  render();
+})();
+</script>
+</body>
+</html>
