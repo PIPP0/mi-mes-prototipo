@@ -269,8 +269,13 @@ button:focus-visible{outline:3px solid #fff;outline-offset:2px}
     else if(a==='viernes'){toast('Listo. Te lo recordaré el viernes.')}
     else if(a==='silenciar'){toast('No te avisaremos más sobre Delivery.')}
   });
+  /* Enlaces directos a cada pantalla (por ejemplo, .../app/#ritmo-alto). Sirven para compartir una vista concreta o importarla a Figma. */
+  var DEEP={'inicio':{hasMonto:false,screen:'home'},'inicio-con-monto':{hasMonto:true,screen:'home'},'monto':{screen:'monto'},'monto-10':{screen:'monto',monto:540000},'mi-mes':{hasMonto:true,screen:'ritmo',st:'ritmo'},'ritmo-alto':{hasMonto:true,screen:'ritmo',st:'riesgo'},'sobre-monto':{hasMonto:true,screen:'ritmo',st:'superado'},'sin-datos':{hasMonto:true,screen:'ritmo',st:'sindatos'},'categorias':{hasMonto:true,screen:'categorias',catk:'ritmo'},'categorias-ritmo-alto':{hasMonto:true,st:'riesgo',screen:'categorias',catk:'riesgo'},'detalle':{hasMonto:true,screen:'detalle'},'aviso':{hasMonto:true,screen:'home',banner:true}};
+  function applyHash(){var k=(location.hash||'').slice(1);if(DEEP[k]){clearTimeout(btimer);S=Object.assign({},D0,DEEP[k]);S._keep=false;render()}}
+  window.addEventListener('hashchange',applyHash);
   window.__setState=function(o){Object.assign(S,o);render();return document.getElementById('app').innerHTML};
   render();
+  applyHash();
 })();
 </script>
 </body>
