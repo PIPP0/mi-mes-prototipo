@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototipo Mi Mes</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap">
+<style>
+/* Layout: panel de recorrido a la izquierda, teléfono interactivo a la derecha. Colores medidos en capturas de la app de Tenpo: fondo #111111, tarjeta #2A2A2A, verde #6BFF99, botón #02FF96, banner #250080. Tipografía aproximada. */
+:root{--stage:#0C0C0C;--stage2:#1C1C1C;--stage3:#2A2A2A;--bg:#111111;--card:#2A2A2A;--card2:#3A3A3A;--gray:#5A5A5A;--txt:#FFFFFF;--mut:#A6A6A6;--green:#6BFF99;--pill:#69FFC0;--btn:#02FF96;--purple:#250080;--amber:#FFC857;--coral:#FF9C9C;--font:'Open Sans',-apple-system,'Helvetica Neue',Arial,sans-serif;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--stage);color:#F2F2F2;font-family:var(--font);font-size:16px;line-height:1.4;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px}
+.wrap{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 460px;gap:48px;align-items:start}
+@media(max-width:900px){.wrap{grid-template-columns:minmax(0,1fr);gap:28px}}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin:0 0 10px}
+h1{font-size:clamp(32px,5vw,48px);line-height:1.08;letter-spacing:-.02em;margin:0 0 14px;text-wrap:balance;font-weight:800}
+.lead{color:#B5B5B5;margin:0 0 28px;max-width:46ch}
+h2{font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:#B5B5B5;margin:0 0 10px;font-weight:700}
+.steps{display:flex;flex-direction:column;gap:8px;margin:0 0 28px}
+.step{all:unset;box-sizing:border-box;cursor:pointer;display:flex;gap:14px;align-items:center;background:var(--stage2);border-radius:16px;padding:12px 16px;font-weight:700;border:2px solid transparent}
+.step small{display:block;font-weight:400;color:#B5B5B5;font-size:13px}
+.step b{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--stage3);flex:none;font-size:14px}
+.step[aria-current=true]{border-color:var(--green)}
+.step[aria-current=true] b{background:var(--green);color:#111}
+.step:focus-visible,.seg button:focus-visible,.phone button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 28px}
+.seg button{all:unset;box-sizing:border-box;cursor:pointer;padding:9px 16px;border-radius:99px;background:var(--stage2);font-weight:700;font-size:14px;border:2px solid transparent}
+.seg button[aria-pressed=true]{background:var(--green);color:#111}
+.note{font-size:13px;color:#B5B5B5;margin:0;max-width:50ch}
+.stagebox{display:flex;justify-content:center}
+.phone{position:relative;width:min(420px,100%);height:840px;border-radius:54px;background:var(--bg);color:var(--txt);box-shadow:0 0 0 9px #000,0 24px 60px rgba(0,0,0,.6);overflow:hidden;font-size:15px}
+.phone *{font-family:var(--font)}
+.tap{all:unset;box-sizing:border-box;cursor:pointer;display:block;width:100%;text-align:left}
+.scr{display:flex;flex-direction:column;height:100%;padding:14px 22px 24px}
+.scr.nv{padding-bottom:96px}
+.sb{display:flex;justify-content:space-between;font-size:15px;font-weight:700;padding:4px 8px 12px}
+.nav{display:flex;align-items:center;justify-content:center;position:relative;height:44px;margin-bottom:8px}
+.nav .bk{all:unset;cursor:pointer;position:absolute;left:-6px;top:0;width:44px;height:44px;display:grid;place-items:center}
+.nav b{font-size:17px;font-weight:700}
+.nav .rt{position:absolute;right:0;top:6px}
+.card{background:var(--card);border-radius:16px;padding:16px;margin-top:12px}
+.chip{display:inline-flex;align-items:center;gap:5px;border-radius:99px;padding:5px 11px;font-size:12px;font-weight:800;white-space:nowrap;color:#111}
+.ok{background:var(--pill)}.wn{background:var(--amber)}.bad{background:var(--coral)}.nu{background:var(--gray);color:#fff}
+.mut{color:var(--mut)}.sm{font-size:13px}
+.h1p{font-size:24px;font-weight:700;line-height:1.2;text-wrap:balance}
+.big{font-weight:300;letter-spacing:-.02em}
+.btn{display:block;width:100%;text-align:center;border-radius:12px;padding:15px;font-size:15px;font-weight:800;cursor:pointer;border:0;background:var(--btn);color:#111}
+.btn.s{background:var(--card2);color:#fff}
+.btn.t{background:none;color:var(--green);padding:12px;font-weight:700}
+.btn.sm2{display:inline-block;width:auto;padding:9px 16px;font-size:14px;border-radius:8px}
+.gp{display:inline-block;background:var(--gray);color:#fff;border-radius:8px;padding:6px 12px;font-size:13px}
+.trk{height:10px;border-radius:9px;background:#404040;position:relative}
+.fil{position:absolute;left:0;top:0;bottom:0;border-radius:9px;background:var(--green)}
+.tk{position:absolute;top:-5px;bottom:-5px;width:3px;background:#fff;border-radius:2px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;font-size:15px;border-bottom:1px solid #3A3A3A}
+.tab{position:absolute;left:0;right:0;bottom:0;height:80px;background:var(--card);display:flex;justify-content:space-around;align-items:center;padding:6px 6px 8px}
+.tab>*{flex:1;text-align:center}
+.tab button{all:unset;cursor:pointer;text-align:center;font-size:12px;color:#E6E6E6;font-weight:400;flex:1;position:relative;padding-top:8px}
+.tab svg{display:block;margin:0 auto 4px}
+.tab .on{color:var(--green)}
+.tab .on::before{content:"";position:absolute;top:-6px;left:22%;right:22%;height:3px;border-radius:0 0 3px 3px;background:var(--green)}
+.tab .fab{flex:0 0 66px;height:56px;margin-top:-34px;border-radius:14px;background:var(--green);color:#111;display:grid;place-items:center;box-shadow:0 6px 16px rgba(0,0,0,.4);padding:0}
+.tab .fab::before{display:none}
+.circ{all:unset;cursor:pointer;width:46px;height:46px;border-radius:50%;background:var(--card2);display:grid;place-items:center;font-size:24px;font-weight:600}
+.opt{all:unset;box-sizing:border-box;cursor:pointer;flex:1;text-align:center;padding:9px 4px;border-radius:12px;background:var(--card2);font-size:12px;font-weight:600;line-height:1.3}
+.opt b{display:block;font-size:14px;font-weight:800}
+.opt[aria-pressed=true]{background:var(--green);color:#111}
+.sw{width:52px;height:31px;border-radius:99px;background:var(--green);position:relative;flex:none;border:0;cursor:pointer}
+.sw::after{content:"";position:absolute;right:3px;top:3px;width:25px;height:25px;border-radius:50%;background:#111}
+.sw[aria-checked=false]{background:#555}.sw[aria-checked=false]::after{right:auto;left:3px;background:#ddd}
+.banner{position:absolute;left:12px;right:12px;width:auto;top:44px;z-index:6;background:#3A3A3A;border-radius:20px;padding:14px 16px;box-shadow:0 12px 30px rgba(0,0,0,.5);animation:in .35s ease-out}
+@keyframes in{from{transform:translateY(-24px);opacity:0}to{transform:none;opacity:1}}
+.toast{position:absolute;left:18px;right:18px;bottom:96px;background:var(--green);color:#111;border-radius:12px;padding:14px 16px;font-size:14px;font-weight:700;z-index:7;animation:in .25s ease-out}
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:8;display:grid;place-items:center;padding:28px}
+.dlg{background:#2C2C2E;border-radius:20px;width:100%;text-align:center;overflow:hidden}
+.dlg p{margin:0}
+.dlg .tt{padding:22px 20px 6px;font-weight:700;font-size:17px;line-height:1.25}
+.dlg .bd{padding:0 20px 18px;font-size:14px;color:#C7C7CC}
+.dlg .ac{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #444}
+.dlg .ac button{all:unset;cursor:pointer;padding:14px;font-size:17px;font-weight:400;color:#0A84FF}
+.dlg .ac button+button{border-left:1px solid #444;font-weight:700}
+.sp{flex:1}
+.cols3{display:flex;gap:8px;margin-top:8px}
+.cols3 div{flex:1;font-size:12px;color:var(--mut)}.cols3 b{display:block;font-size:15px;color:#fff;font-weight:700}
+.cat{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #3A3A3A}
+.cat:last-child{border:0}
+.dots{display:flex;gap:6px;margin-top:10px}.dots i{flex:1;height:8px;border-radius:5px;background:#404040}.dots i.f{background:var(--green)}
+.hello{display:flex;align-items:center;justify-content:space-between;margin:4px 0 14px}
+.hello .nm{font-size:18px;font-weight:400}.hello .nm b{color:var(--txt);font-weight:700}
+.ib{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;background:var(--gray);position:relative}
+.ib.bell{background:#E8FFEF;color:#111}
+.ib.bell::after{content:"";position:absolute;top:-4px;right:-4px;width:11px;height:11px;border-radius:50%;background:var(--green)}
+.av{width:40px;height:40px;border-radius:50%;background:var(--green);color:#111;display:grid;place-items:center;font-weight:700;font-size:19px;position:relative}
+.av i{position:absolute;right:-5px;bottom:-3px;width:16px;height:16px;border-radius:50%;background:#111;color:var(--green);font-size:10px;font-style:normal;display:grid;place-items:center;font-weight:800}
+.hdrs{display:flex;gap:10px;align-items:center}
+.mint{background:var(--green);color:#111;border-radius:16px;padding:16px 18px;display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.mint b{font-size:15px;display:block}.mint span{font-size:20px;font-weight:800;letter-spacing:.02em}
+.mc{width:50px;height:68px;border-radius:7px;background:#fff;display:grid;place-items:end center;color:#111;font-weight:800;font-size:12px;padding-bottom:10px;margin:-22px 10px -22px 0}
+@media(prefers-reduced-motion:reduce){.banner,.toast{animation:none}}
+</style>
+
+<main class="wrap">
+  <section>
+    <p class="eyebrow">Desafío Product Designer · Numa</p>
+    <h1>Prototipo navegable de Mi Mes</h1>
+    <p class="lead">Toca el teléfono como lo haría un cliente, o salta a un paso del recorrido. Los datos son de ejemplo.</p>
+    <h2>Recorrido</h2>
+    <div class="steps" id="steps"></div>
+    <h2>Estado de Mi Mes</h2>
+    <div class="seg" id="seg"></div>
+    <p class="note">Cambia el monto en el paso 2 y mira cómo el estado de Mi Mes se recalcula. Es un prototipo de diseño, sin datos reales de clientes.</p>
+  </section>
+  <div class="stagebox"><div class="phone" id="phone"></div></div>
+</main>
+
+<script>
+(function(){
+  var fmt=function(n){return '$'+Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.')};
+  var S={screen:'home',st:'ritmo',monto:600000,tope:false,aviso:true,banner:false,toast:'',perm:false,catk:'ritmo'};
+  var timer=null, SPENT=258000, DAY=14, PROJ=571000, AVG=18400;
+  var STEPS=[['home','Home','Veo cómo voy sin entrar'],['monto','Definir monto','Elijo con el dato a la vista'],['ritmo','Mi Mes','Ritmo, proyección y acción'],['aviso','Aviso y detalle','Me avisan y resuelvo']];
+  var STATES=[['ritmo','En ritmo'],['riesgo','Ritmo alto'],['superado','Sobre el monto'],['sindatos','Sin datos']];
+  var CAT={
+    ritmo:{day:14,rows:[['Delivery',64000,32000],['Ocio',38000,30000],['Supermercado',96000,92000],['Transporte',41000,44000],['Otros',19000,20000]]},
+    riesgo:{day:22,rows:[['Delivery',128000,70000],['Ocio',76000,60000],['Supermercado',190000,175000],['Transporte',82000,88000],['Otros',44000,40000]]},
+    superado:{day:27,rows:[['Delivery',156000,85000],['Ocio',92000,70000],['Supermercado',230000,210000],['Transporte',100000,105000],['Otros',56000,50000]]}};
+  var SV=function(p,w,h){return '<svg width="'+(w||24)+'" height="'+(h||24)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>'};
+  var ICON={
+    home:SV('<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',26),
+    cuenta:SV('<path d="M8 6h12M8 12h12M8 18h12"/><path d="M4 6h.01M4 12h.01M4 18h.01"/>',26),
+    tarjetas:SV('<rect x="4" y="4" width="13" height="17" rx="2.5"/><path d="M17 8l4 1v10l-4 1"/><path d="M8 9h5"/>',26),
+    ayuda:SV('<path d="M4 14v-2a8 8 0 0116 0v2"/><rect x="3" y="13" width="4" height="6" rx="2"/><rect x="17" y="13" width="4" height="6" rx="2"/>',26),
+    plus:SV('<path d="M12 5v14M5 12h14"/>',30),
+    gift:SV('<rect x="3" y="9" width="18" height="12" rx="2"/><path d="M3 13h18M12 9v12"/><path d="M12 9C9 9 8 5 10.5 5S12 9 12 9zm0 0c3 0 4-4 1.5-4S12 9 12 9z"/>',22),
+    bell:SV('<path d="M6 17V11a6 6 0 0112 0v6l1.5 2h-15z"/><path d="M10 21h4"/>',22),
+    eye:SV('<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',22),
+    back:SV('<path d="M15 5l-7 7 7 7"/>',26),
+    arrow:SV('<path d="M7 17L17 7M9 7h8v8"/>',14),
+    chev:SV('<path d="M9 5l7 7-7 7"/>',20),
+    swap:SV('<rect x="2" y="5" width="14" height="9" rx="1.5"/><path d="M5 9.5h.01M13 9.5h.01"/><path d="M19 8v12m0 0l-3-3m3 3l3-3"/>',26)};
+
+  /* Veredicto único para todo el prototipo: tolerancia de 3% para no alertar por diferencias mínimas. */
+  function verdict(m){var tol=0.03*m,diff=m-PROJ;return diff>=tol?'bien':(diff>-tol?'justo':'alto')}
+  function perDay(m){return Math.round((m-SPENT)/(31-DAY)/100)*100}
+
+  function chart(monto,day,spent){
+    var proj=spent/day*31, ymax=Math.max(monto,proj)*1.05, y=function(v){return 92-v/ymax*78}, xd=day/31*340;
+    var prof=[[0,0],[.21,.23],[.43,.47],[.64,.74],[.86,.87],[1,1]];
+    var pts=prof.map(function(p){return (p[0]*xd).toFixed(1)+','+y(p[1]*spent).toFixed(1)}).join(' ');
+    return '<svg viewBox="0 0 340 100" style="display:block;width:100%;margin-top:8px" role="img" aria-label="Gráfico de ritmo del mes: gasto real, ritmo ideal y proyección">'+
+    '<line x1="0" y1="92" x2="340" y2="92" stroke="#444" stroke-width="2"/>'+
+    '<line x1="0" y1="92" x2="340" y2="'+y(monto).toFixed(1)+'" stroke="#8C8C8C" stroke-width="2" stroke-dasharray="6 5"/>'+
+    '<line x1="'+xd.toFixed(1)+'" y1="92" x2="'+xd.toFixed(1)+'" y2="10" stroke="#444" stroke-width="1.5"/>'+
+    '<line x1="'+xd.toFixed(1)+'" y1="'+y(spent).toFixed(1)+'" x2="340" y2="'+y(proj).toFixed(1)+'" stroke="#B8FFD2" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round"/>'+
+    '<polyline points="'+pts+'" fill="none" stroke="#6BFF99" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>'+
+    '<circle cx="'+xd.toFixed(1)+'" cy="'+y(spent).toFixed(1)+'" r="7" fill="#6BFF99" stroke="#2A2A2A" stroke-width="3"/></svg>';
+  }
+  function topCats(k,n){var r=CAT[k].rows.slice().sort(function(a,b){return (b[1]-b[2])-(a[1]-a[2])});return r.slice(0,n)}
+  function view(){
+    var m=S.monto, pd=perDay(m), vd=verdict(m);
+    if(S.st==='ritmo'){
+      var base={sub:'Llevas $258.000 de '+fmt(m)+' · día 14 de 31',chart:chart(m,DAY,SPENT)};
+      if(vd==='bien') return Object.assign(base,{chip:'Vas bien',cls:'ok',head:'Te quedan '+fmt(pd)+' por día',msg:'A este ritmo llegarías a <b>'+fmt(PROJ)+'</b>: '+fmt(m-PROJ)+' bajo tu monto.'});
+      if(vd==='justo') return Object.assign(base,{chip:'Vas justo',cls:'ok',head:'Te quedan '+fmt(pd)+' por día',msg:'A este ritmo llegarías a <b>'+fmt(PROJ)+'</b>, casi en tu monto.'});
+      return Object.assign(base,{chip:'Ritmo alto',cls:'wn',head:'A este ritmo pasarías tu monto en '+fmt(PROJ-m),msg:'Para cerrar en tu monto, tendrías que gastar <b>'+fmt(pd)+'</b> por día desde hoy. Hoy gastas '+fmt(AVG)+'.'});
+    }
+    if(S.st==='riesgo') return {chip:'Ritmo alto',cls:'wn',head:'Te quedan $80.000 para 9 días',sub:'$8.900 por día · día 22 de 31',msg:'A este ritmo pasarías tu monto en <b>$133.000</b>. Aún puedes ajustarlo.',chart:chart(600000,22,520000),b1:'Ver qué ajustar',b2:'Cambiar monto',top:'riesgo'};
+    if(S.st==='superado') return {chip:'Sobre tu monto',cls:'bad',head:'Superaste tu monto en $34.000',sub:'$634.000 de $600.000 · día 27 de 31',msg:'Lo que gastes desde ahora se suma a este exceso. Quedan 4 días.',b1:'Ajustar monto',b2:'Ver en qué se fue',top:'superado'};
+    return {chip:'Mes nuevo',cls:'nu',head:'Estamos conociendo tus gastos',sub:'Día 2 de 31',msg:'Con unos días más podremos mostrarte tu ritmo. Tu primera lectura llega el día 5.',b1:'Definir mi monto'};
+  }
+  var SB='<div class="sb"><span>9:41</span><span>5G ▮▮▮</span></div>';
+  function nav(title,go,right){return '<div class="nav"><button class="bk" data-go="'+go+'" aria-label="Volver">'+ICON.back+'</button><b>'+title+'</b>'+(right?'<span class="rt">'+right+'</span>':'')+'</div>'}
+  function tabs(a){function t(id,lab){return '<button class="'+(a===id?'on':'')+'" '+(id==='home'?'data-go="home"':'')+'>'+ICON[id]+lab+'</button>'}return '<div class="tab">'+t('home','Inicio')+t('cuenta','Gastos')+'<button class="fab" aria-label="Acciones">'+ICON.plus+'</button>'+t('tarjetas','Pagos')+t('ayuda','Ayuda')+'</div>'}
+  function catRow(r,link){
+    var d=r[1]-r[2], ch=d>0?'<span class="chip '+(d>=r[2]*0.5?'wn':'nu')+'">+'+fmt(d)+'</span>':'<span class="chip ok">−'+fmt(-d)+'</span>';
+    var inner='<div><div style="font-weight:700;font-size:16px">'+r[0]+'</div><div class="sm mut">Habitual '+fmt(r[2])+'</div></div><div style="text-align:right"><div style="font-weight:700;font-size:16px;margin-bottom:3px">'+fmt(r[1])+'</div>'+ch+'</div>';
+    return link?'<button class="tap cat" data-go="detalle" aria-label="Ver detalle de '+r[0]+'">'+inner+'</button>':'<div class="cat">'+inner+'</div>';
+  }
+
+  function home(){
+    var pd=perDay(S.monto), vd=verdict(S.monto), lab={bien:'Vas bien',justo:'Vas justo',alto:'Ritmo alto'}[vd];
+    return '<div class="scr nv">'+SB+
+    '<div class="hello"><div class="nm">Hola, <b>Camila</b></div><div class="hdrs"><span class="ib bell">'+ICON.bell+'</span><span class="av">C</span></div></div>'+
+    '<div class="card" style="margin-top:0"><div class="sm mut">Saldo disponible</div><div class="big" style="font-size:36px;line-height:1.15">$482.300</div></div>'+
+    '<button class="tap card" data-go="ritmo" data-b="1" aria-label="Abrir Mi Mes"><div style="display:flex;justify-content:space-between;align-items:center"><span class="sm mut" style="font-weight:700;letter-spacing:.5px">TU MES · OCTUBRE</span><span class="chip '+(vd==='alto'?'wn':'ok')+'">'+lab+'</span></div>'+
+    '<div style="margin-top:12px" data-b="2r"><span class="big" style="font-size:44px">'+fmt(pd)+'</span> <span class="mut" style="font-size:16px">por día</span></div>'+
+    '<div class="sm mut" style="margin-top:2px">para cerrar octubre dentro de tu monto</div>'+
+    '<div style="margin-top:20px" class="trk" data-b="3r"><div class="fil" style="width:'+Math.min(100,SPENT/S.monto*100).toFixed(0)+'%"></div><div class="tk" style="left:45%"></div></div>'+
+    '<div style="display:flex;justify-content:space-between;margin-top:10px;font-size:13px"><span>Gastado $258.000</span><span class="mut">Monto '+fmt(S.monto)+'</span></div>'+
+    '<div class="sm mut" style="margin-top:4px">La marca blanca es dónde deberías ir hoy.</div><div style="margin-top:12px"><span class="btn sm2">Ver mi mes</span></div></button>'+
+    ''+tabs('home')+'</div>';
+  }
+  function monto(){
+    var m=S.monto, vd=verdict(m), pd=perDay(m);
+    var o=function(v,l){return '<button class="opt" data-act="set" data-v="'+v+'" aria-pressed="'+(S.monto===v)+'">'+l+'<b>'+fmt(v)+'</b></button>'};
+    var help=vd==='bien'?'A tu ritmo llegarías a <b>'+fmt(PROJ)+'</b>, bajo este monto.':vd==='justo'?'A tu ritmo llegarías a <b>'+fmt(PROJ)+'</b>, casi en este monto.':'A tu ritmo llegarías a <b>'+fmt(PROJ)+'</b>. Para cerrar en este monto tendrías que gastar <b>'+fmt(pd)+'</b> por día desde hoy (hoy: '+fmt(AVG)+').';
+    return '<div class="scr">'+SB+nav('Tu monto de octubre','ritmo')+
+    '<div class="card" data-b="1r" style="margin-top:4px"><div style="font-weight:700;font-size:15px">Tus últimos 3 meses</div>'+
+    '<div class="cols3"><div>Julio<b>$612.000</b></div><div>Agosto<b>$585.000</b></div><div>Septiembre<b>$597.000</b></div></div>'+
+    '<div class="sm mut" style="margin-top:8px">Promedio <b style="color:#fff">$598.000</b>, sin contar arriendo ni cuentas fijas.</div></div>'+
+    '<div class="card" style="text-align:center" data-b="2"><div class="sm" style="text-align:left;margin-bottom:10px"><b>Hoy es día 14</b> y llevas <b>$258.000</b> este mes.</div><div style="display:flex;gap:8px">'+o(600000,'Tu promedio')+o(570000,'5% menos')+o(540000,'10% menos')+'</div>'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><button class="circ" data-act="menos" aria-label="Bajar el monto $10.000">−</button><div class="big" style="font-size:38px;font-weight:600" aria-live="polite">'+fmt(m)+'</div><button class="circ" data-act="mas" aria-label="Subir el monto $10.000">+</button></div>'+
+    '<div class="sm" style="margin-top:8px;line-height:1.4;text-align:left;min-height:55px" aria-live="polite">'+help+'</div></div>'+
+    '<div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:12px" data-b="3"><div><div style="font-size:16px;font-weight:700">Avisarme cómo voy</div><div class="sm mut" style="margin-top:3px;line-height:1.35">Máximo 2 avisos por semana, solo si hay algo nuevo.</div></div><button class="sw" role="switch" aria-checked="'+S.aviso+'" aria-label="Avisarme cómo voy" data-act="aviso"></button></div>'+
+    '<div class="sp"></div><button class="btn" data-act="usar">Usar '+fmt(m)+'</button></div>';
+  }
+  function ritmo(){
+    var v=view(), nodata=S.st==='sindatos';
+    var h='<div class="scr">'+SB+nav('Mi Mes','home','<span class="gp">Octubre ▾</span>')+
+    '<div class="card" data-b="1" style="margin-top:4px"><span class="chip '+v.cls+'">'+v.chip+'</span><div style="font-size:26px;font-weight:600;line-height:1.15;margin-top:12px;letter-spacing:-.01em;text-wrap:balance">'+v.head+'</div><div class="sm mut" style="margin-top:8px">'+v.sub+'</div></div>';
+    if(v.chart){h+='<div class="card" data-b="2"><div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:16px">Tu ritmo</b><span class="sm mut">Real · Ideal · Proyección</span></div>'+v.chart+'<div class="sm mut" style="display:flex;justify-content:space-between;margin-top:2px"><span>1</span><span>Hoy</span><span>31</span></div><div style="font-size:15px;margin-top:10px;line-height:1.4">'+v.msg+'</div><div class="sm mut" style="margin-top:6px">No incluye arriendo ni cuentas fijas.</div></div>'}
+    else{h+='<div class="card" style="font-size:16px;line-height:1.45">'+v.msg+'</div>'}
+    if(S.st==='riesgo'||S.st==='superado'){
+      var tc=topCats(S.st,S.st==='riesgo'?2:3);
+      h+='<div class="card" style="padding:14px 16px"><b style="font-size:15px">'+(S.st==='riesgo'?'Lo que más pesa':'En qué se fue')+'</b>'+tc.map(function(r){return '<div class="sm" style="display:flex;justify-content:space-between;margin-top:6px"><span>'+r[0]+'</span><b>+'+fmt(r[1]-r[2])+' sobre lo habitual</b></div>'}).join('')+'</div>';
+    }
+    if(S.st==='sindatos'){
+      h+='<div class="card"><b style="font-size:15px">Primera lectura el día 5</b><div class="dots"><i class="f"></i><i class="f"></i><i></i><i></i><i></i></div><div class="sm mut" style="margin-top:8px">Llevas $41.000 en 6 movimientos. Con 5 días de datos calculamos tu ritmo.</div></div>';
+    }
+    if(S.st==='ritmo'){h+='<div class="card" data-b="3"><b style="font-size:16px">Delivery va al doble de lo habitual</b><div class="sm mut" style="margin:4px 0 12px">$64.000 este mes · $32.000 a esta fecha en promedio</div><button class="btn" data-go="detalle">'+(S.tope?'Tope de $80.000 activo':'Ponerle un tope')+'</button></div><div class="sp"></div><button class="tap" data-go="categorias" style="color:#6BFF99;font-weight:700;text-align:center;font-size:15px">Ver todas las categorías →</button>'}
+    else{h+='<div class="sp"></div><button class="btn" style="margin-top:10px" data-act="'+(nodata?'definir':(v.top?'cat:'+v.top:'ajustar'))+'">'+v.b1+'</button>'+(v.b2?'<button class="btn t" data-act="'+(S.st==='superado'?'cat:superado':'otro')+'">'+v.b2+'</button>':'')}
+    return h+'</div>';
+  }
+  function categorias(){
+    var k=S.catk||'ritmo', d=CAT[k];
+    return '<div class="scr">'+SB+nav('Dónde ajustar','ritmo')+
+    '<div class="mut" style="font-size:14px;margin:0 0 4px;line-height:1.4">Ordenadas por cuánto se alejan de lo habitual a esta fecha (día '+d.day+').</div>'+
+    '<div class="card" style="padding:4px 16px">'+d.rows.slice().sort(function(a,b){return (b[1]-b[2])-(a[1]-a[2])}).map(function(r){return catRow(r,r[0]==='Delivery')}).join('')+'</div>'+
+    '<div class="sm mut" style="margin-top:10px">Toca Delivery para ver su detalle y ponerle un tope.</div><div class="sp"></div><button class="btn s" data-act="otro">Cambiar monto</button></div>';
+  }
+  function detalle(){
+    return '<div class="scr">'+SB+'<div style="height:96px"></div>'+nav('Delivery','ritmo')+
+    '<div style="margin:0 0 2px"><span class="chip wn">Al doble de lo habitual</span></div>'+
+    '<div class="card" data-b="2"><div class="big" style="font-size:38px;font-weight:600">$64.000 <span class="mut" style="font-size:15px;font-weight:400;letter-spacing:0">este mes</span></div>'+
+    '<div style="margin-top:12px;display:flex;justify-content:space-between;font-size:14px"><span>Este mes</span><b>$64.000</b></div><div class="trk" style="margin-top:6px;height:12px"><div class="fil" style="width:100%"></div></div>'+
+    '<div style="margin-top:12px;display:flex;justify-content:space-between;font-size:14px"><span>Habitual a esta fecha</span><b>$32.000</b></div><div class="trk" style="margin-top:6px;height:12px"><div class="fil" style="width:50%;background:#8C8C8C"></div></div></div>'+
+    '<div style="font-size:17px;font-weight:700;margin:14px 0 0">9 pedidos este mes</div><div class="row"><span>Uber Eats · 12 oct</span><b>−$14.990</b></div><div class="row"><span>PedidosYa · 9 oct</span><b>−$18.490</b></div><div class="row" style="border:0"><span>Uber Eats · 6 oct</span><b>−$12.990</b></div>'+
+    '<div class="sp"></div><div data-b="3"><button class="btn" data-act="tope">'+(S.tope?'Tope de $80.000 activo':'Ponerle un tope de $80.000')+'</button><button class="btn s" data-act="viernes" style="margin-top:8px;padding:14px">Recordármelo el viernes</button><button class="btn t" data-act="silenciar">No avisarme de esto</button></div></div>';
+  }
+  function banner(){
+    return '<button class="banner tap" data-go="detalle" data-b="1" aria-label="Abrir aviso de Delivery"><div style="display:flex;justify-content:space-between;font-size:13px"><b>Numa</b><span class="mut">ahora</span></div><div style="font-size:16px;font-weight:700;margin-top:4px">Delivery va al doble de lo habitual</div><div style="font-size:14px;margin-top:2px;line-height:1.35" class="mut">Llevas $64.000 este mes. Ver cómo ajustarlo.</div></button>';
+  }
+  function sheet(){
+    return '<div class="scrim"><div class="dlg" role="dialog" aria-label="Permiso de notificaciones"><p class="tt">“Numa” quiere enviarte notificaciones</p><p class="bd">Te avisaremos cuando haya algo nuevo en tu mes. Puedes cambiarlo en Ajustes.</p><div class="ac"><button data-act="noperm">No permitir</button><button data-act="perm">Permitir</button></div></div></div>';
+  }
+  function render(){
+    var h={home:home,monto:monto,ritmo:ritmo,detalle:detalle,categorias:categorias}[S.screen]();
+    if(S.banner && (S.screen==='home'||S.screen==='detalle')) h+=banner();
+    if(S.toast) h+='<div class="toast" role="status">'+S.toast+'</div>';
+    if(S.perm) h+=sheet();
+    document.getElementById('phone').innerHTML=h;
+    var cur=S.screen==='detalle'?'aviso':(S.screen==='categorias'?'ritmo':S.screen);
+    document.getElementById('steps').innerHTML=STEPS.map(function(s,i){return '<button class="step" data-step="'+s[0]+'" aria-current="'+(cur===s[0])+'"><b>'+(i+1)+'</b><span>'+s[1]+'<small>'+s[2]+'</small></span></button>'}).join('');
+    document.getElementById('seg').innerHTML=STATES.map(function(s){return '<button data-st="'+s[0]+'" aria-pressed="'+(S.st===s[0]&&S.screen==='ritmo')+'">'+s[1]+'</button>'}).join('');
+  }
+  function toast(t){S.toast=t;render();clearTimeout(timer);timer=setTimeout(function(){S.toast='';render()},2600)}
+  function go(){S.perm=false;S.screen='ritmo';S.st='ritmo'}
+  document.addEventListener('click',function(e){
+    var el=e.target.closest('[data-go],[data-act],[data-step],[data-st]'); if(!el) return;
+    if(el.dataset.step){var s=el.dataset.step; S.banner=false; S.perm=false; if(s==='aviso'){S.screen='home';S.banner=true}else S.screen=s; if(s==='ritmo')S.st='ritmo'; render(); return}
+    if(el.dataset.st){S.st=el.dataset.st;S.screen='ritmo';S.banner=false;render();return}
+    if(el.dataset.go){if(el.dataset.go==='categorias')S.catk=(S.st in CAT)?S.st:'ritmo';S.screen=el.dataset.go;S.banner=false;render();return}
+    var a=el.dataset.act;
+    if(a&&a.indexOf('cat:')===0){S.catk=a.slice(4);S.screen='categorias';render();return}
+    if(a==='menos'){S.monto=Math.max(300000,S.monto-10000);render()}
+    else if(a==='mas'){S.monto=Math.min(1200000,S.monto+10000);render()}
+    else if(a==='set'){S.monto=parseInt(el.dataset.v,10);render()}
+    else if(a==='aviso'){S.aviso=!S.aviso;render()}
+    else if(a==='usar'){if(S.aviso){S.perm=true;render()}else{go();toast('Monto definido en '+fmt(S.monto)+'.')}}
+    else if(a==='perm'){go();toast('Monto definido en '+fmt(S.monto)+'. Te avisaré como máximo 2 veces por semana.')}
+    else if(a==='noperm'){S.aviso=false;go();toast('Monto definido. Sin avisos: puedes activarlos en Ajustes.')}
+    else if(a==='otro'||a==='definir'||a==='ajustar'){S.screen='monto';S.st='ritmo';render()}
+    else if(a==='tope'){S.tope=!S.tope;toast(S.tope?'Tope de $80.000 guardado para Delivery.':'Tope quitado.')}
+    else if(a==='viernes'){toast('Listo. Te lo recordaré el viernes.')}
+    else if(a==='silenciar'){toast('No te avisaremos más sobre Delivery.')}
+  });
+  window.__setState=function(o){Object.assign(S,o);render();return document.getElementById('phone').innerHTML};
+  render();
+})();
+</script>
+
+</body>
+</html>
